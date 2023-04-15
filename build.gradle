@@ -1,0 +1,45 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        // Accompanist: https://github.com/google/accompanist
+        accompanist_version = '0.30.0'
+
+        appcompat_version = '1.6.0-rc01'
+
+        // Billing: https://developer.android.com/google/play/billing/integrate
+        billing_version = "5.1.0"
+
+        // kotlin version
+        kotlin_version = '1.7.20'
+        kotlin_compose_compiler_version = "1.4.0"
+        // come along with kotlin_version https://developer.android.com/jetpack/androidx/releases/compose-kotlin#declaring_dependencies
+
+        // hilt
+        hilt_version = '2.44'
+        hilt_compose_version = '1.0.0'
+
+        // others
+        room_version = "2.4.3"
+        timber_version = '5.0.1'
+    }
+
+    repositories {
+        maven { url "https://jitpack.io" }
+        google()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.android.application' version '7.3.0' apply false
+    id 'com.android.library' version '7.3.0' apply false
+    id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
+
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+    id "org.jetbrains.kotlin.kapt" version "$kotlin_version"
+    // <hilt>
+    // using for build.gradle plugin id 'com.google.dagger.hilt.android'
+    id 'com.google.dagger.hilt.android' version "$hilt_version" apply false
+    // </hilt>
+}
