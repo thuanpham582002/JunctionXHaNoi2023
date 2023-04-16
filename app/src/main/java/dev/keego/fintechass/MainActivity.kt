@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import dev.keego.fintechass.screen.NavGraphs
+import dev.keego.fintechass.NavGraphs
 import dev.keego.fintechass.setup.theme.FintechAssTheme
 
 @AndroidEntryPoint
