@@ -1,14 +1,17 @@
 package dev.keego.fintechass.screen.chat
 
 import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.keego.fintechass.screen.chat.jsonobject.Entity
 import dev.keego.fintechass.screen.chat.jsonobject.InputData
 import dev.keego.fintechass.setup.room.Message
 import dev.keego.fintechass.setup.room.RoomChat
 import dev.keego.fintechass.setup.room.RoomRepository
 import dev.keego.fintechass.state.State
 import dev.keego.fintechass.state.VimelStateHolder
+import dev.keego.fintechass.ui.AssistantVimel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +51,10 @@ class ChatVimel @Inject constructor(private val roomRepository: RoomRepository) 
         }
     }
 
-    fun insertMessage(message: Message) {
+    fun insertMessage(
+        message: Message,
+        onEntityReceive: (entity: Entity) -> Unit,
+    ) {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         }
 
@@ -69,7 +75,9 @@ class ChatVimel @Inject constructor(private val roomRepository: RoomRepository) 
                 Log.i("MainActivity", "onResponse: ${inputData.entities}")
                 for (entity in inputData.entities) {
                     Log.i("MainActivity", "onResponse: ${entity.entity}")
+                    onEntityReceive(entity)
                 }
+
             }
 
             override fun onFailure(call: Call, e: IOException) {

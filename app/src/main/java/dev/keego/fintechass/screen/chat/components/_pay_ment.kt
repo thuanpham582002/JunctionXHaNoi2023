@@ -1,14 +1,21 @@
 package dev.keego.fintechass.screen.chat.components
 
-import android.widget.Space
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -21,9 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.keego.fintechass.R
 import dev.keego.fintechass.ui.AssistantVimel
 
 @Composable
@@ -65,11 +70,11 @@ internal fun _pay_ment(
                 CompositionLocalProvider(LocalContentColor provides Color.White) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "${state.receivers.size}",
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
+//                            Text(
+//                                text = "${state.receivers.size}",
+//                                style = MaterialTheme.typography.headlineSmall
+//                            )
+//                            Spacer(modifier = Modifier.width(4.dp))
                             androidx.compose.material.Icon(
                                 painter = painterResource(id = intentIcon),
                                 null

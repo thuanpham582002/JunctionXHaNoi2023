@@ -19,7 +19,6 @@ import dev.keego.fintechass.destinations.new_group_Destination
 import dev.keego.fintechass.screen.channellist.components._avatar_item
 import dev.keego.fintechass.screen.channellist.components._channel_item
 import dev.keego.fintechass.screen.channellist.components._empty_content
-import dev.keego.fintechass.screen.chat.components._pay_ment
 import dev.keego.fintechass.setup.room.RoomChat
 import dev.keego.fintechass.setup.room.listUserExample
 import dev.keego.fintechass.ui._assistant_component
@@ -101,7 +100,7 @@ fun channel_list_(navigator: DestinationsNavigator) {
                 .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            _assistant_component()
+//            _assistant_component()
 
             if (state.roomChats.isEmpty()) {
                 _empty_content(Modifier.fillMaxSize()) {

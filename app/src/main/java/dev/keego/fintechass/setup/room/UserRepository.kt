@@ -1,7 +1,5 @@
 package dev.keego.fintechass.setup.room
 
-import androidx.room.Insert
-import androidx.room.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

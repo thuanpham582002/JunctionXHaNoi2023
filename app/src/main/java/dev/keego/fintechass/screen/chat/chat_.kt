@@ -1,5 +1,6 @@
 package dev.keego.fintechass.screen.chat
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,6 +45,7 @@ import dev.keego.fintechass.screen.chat.components._message_item_me
 import dev.keego.fintechass.screen.chat.components._message_item_you
 import dev.keego.fintechass.setup.room.Message
 import dev.keego.fintechass.setup.room.listUserExample
+import dev.keego.fintechass.ui.AssistantVimel
 import dev.keego.fintechass.ui._assistant_component
 import kotlinx.coroutines.launch
 
@@ -51,8 +53,7 @@ import kotlinx.coroutines.launch
 @Composable
 @Destination
 fun chat_(
-    navigator: DestinationsNavigator,
-    id: Int
+    navigator: DestinationsNavigator, id: Int
 ) {
     val context = LocalContext.current
     val chatVimel: ChatVimel = hiltViewModel()
@@ -65,39 +66,33 @@ fun chat_(
         chatVimel.init(id)
     }
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    val text = ""
-                    Text(
-                        text = if (state.roomChat != null) {
-                            if (state.roomChat!!.users.size <= 2) {
-                                listUserExample[state.currentUserId].name
-                            } else {
-                                state.roomChat!!.name
-                            }
-                        } else {
-                            "Loading..."
-                        }
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navigator.popBackStack()
-                    }) {
-                        Image(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null
-                        )
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(title = {
+            val text = ""
+            Text(
+                text = if (state.roomChat != null) {
+                    if (state.roomChat!!.users.size <= 2) {
+                        listUserExample[state.currentUserId].name
+                    } else {
+                        state.roomChat!!.name
                     }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
+                } else {
+                    "Loading..."
+                }
             )
-        }
-    ) { paddingValues ->
+        }, navigationIcon = {
+            IconButton(onClick = {
+                navigator.popBackStack()
+            }) {
+                Image(
+                    imageVector = Icons.Default.ArrowBack, contentDescription = null
+                )
+            }
+        }, modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+        )
+    }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -110,24 +105,18 @@ fun chat_(
             ) {
                 Column {
                     Spacer(modifier = Modifier.weight(1f))
-                    LazyColumn(
-                        state = scrollState,
-                        modifier = Modifier
-                            .background(color = MaterialTheme.colorScheme.background),
+                    LazyColumn(state = scrollState,
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
                         content = {
                             state.roomChat?.messages?.size?.let { size ->
                                 items(size) {
                                     if (state.roomChat!!.messages[it].idUser == state.currentUserId) {
                                         _message_item_me(state.roomChat!!.messages[it].message)
                                     } else {
-                                        if (it > 0 && state.roomChat!!.messages[it].idUser == state
-                                                .roomChat!!
-                                                .messages[it - 1].idUser
+                                        if (it > 0 && state.roomChat!!.messages[it].idUser == state.roomChat!!.messages[it - 1].idUser) _message_item_you(
+                                            state.roomChat!!.messages[it].message,
+                                            state.roomChat!!.messages[it].idUser,
                                         )
-                                            _message_item_you(
-                                                state.roomChat!!.messages[it].message,
-                                                state.roomChat!!.messages[it].idUser,
-                                            )
                                         else {
                                             _message_item_you(
                                                 state.roomChat!!.messages[it].message,
@@ -151,7 +140,8 @@ fun chat_(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(68.dp)
-                    .background(color = Color.White), verticalAlignment = Alignment.CenterVertically
+                    .background(color = Color.White),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
 
@@ -162,26 +152,20 @@ fun chat_(
                         painter = painterResource(id = R.drawable.icon_more),
                         contentDescription = null
                     )
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }) {
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                         state.roomChat?.users?.forEach {
                             if (it.id == state.currentUserId) return@forEach
-                            DropdownMenuItem(
-                                text = { Text(text = it.name) },
-                                onClick = {
-                                    expanded = false
-                                    chatVimel.switchUser(it.id)
-                                    Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
-                                },
-                                leadingIcon = {
-                                    Image(
-                                        painter = painterResource(id = it.avt),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                            )
+                            DropdownMenuItem(text = { Text(text = it.name) }, onClick = {
+                                expanded = false
+                                chatVimel.switchUser(it.id)
+                                Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
+                            }, leadingIcon = {
+                                Image(
+                                    painter = painterResource(id = it.avt),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            })
                         }
                     }
                 }
@@ -203,10 +187,32 @@ fun chat_(
                     ),
                     shape = RoundedCornerShape(24.dp),
                 )
+
                 val scope = rememberCoroutineScope()
+                val assistantVimel: AssistantVimel = hiltViewModel()
+                val assistantState by assistantVimel.state.collectAsState()
+
                 IconButton(onClick = {
                     if (text.isEmpty()) return@IconButton
-                    chatVimel.insertMessage(Message(state.currentUserId, text.trim()))
+                    chatVimel.insertMessage(
+                        Message(state.currentUserId, text.trim()),
+                        onEntityReceive = {
+                            assistantVimel.setEntity(it)
+                            if (assistantState.amount.isNotEmpty()) {
+                                chatVimel.insertMessage(
+                                    Message(
+                                        listUserExample[1].id,
+                                        "Bạn muốn chuyển khoản cho tk ${
+                                            assistantState
+                                                .accountNumber
+                                        }\n" + "Ngân hàng: ${
+                                            assistantState
+                                                .payment?.name
+                                        }\n" + "Số tiền: ${assistantState.amount}\n "
+                                    )
+                                ) {}
+                            }
+                        })
                     state.roomChat?.messages?.size?.let {
                         if (it > 0) {
                             scope.launch {

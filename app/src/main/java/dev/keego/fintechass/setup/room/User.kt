@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import dev.keego.fintechass.R
 import dev.keego.fintechass.setup.room.converter.ListIntConverter
-import dev.keego.fintechass.setup.room.converter.MessageConverter
 import dev.keego.fintechass.setup.room.converter.PaymentCardConverter
 import kotlinx.android.parcel.Parcelize
 

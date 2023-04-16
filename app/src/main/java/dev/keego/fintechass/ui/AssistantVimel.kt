@@ -1,19 +1,19 @@
 package dev.keego.fintechass.ui
 
-import dev.keego.fintechass.FakeData
 import dev.keego.fintechass.Payment
+import dev.keego.fintechass.screen.chat.jsonobject.Entity
 import dev.keego.fintechass.setup.room.User
 import dev.keego.fintechass.setup.room.listUserExample
 import dev.keego.fintechass.state.State
 import dev.keego.fintechass.state.VimelStateHolder
 import javax.inject.Inject
 
-class AssistantVimel @Inject constructor() : VimelStateHolder<AssistantVimel.AssistantVMState>(
+class   AssistantVimel @Inject constructor() : VimelStateHolder<AssistantVimel.AssistantVMState>(
     AssistantVMState()
 ) {
     data class AssistantVMState(
-        val assistantState: AssistantState = AssistantState.SUGGEST,
-        val receivers: List<User> = emptyList(),
+        val assistantState: AssistantState = AssistantState.NULL,
+        val accountNumber: String = "",
         val amount: String = "",
         val payment: Payment? = null,
         val message: String = "",
@@ -23,22 +23,44 @@ class AssistantVimel @Inject constructor() : VimelStateHolder<AssistantVimel.Ass
 
     }
 
-    fun moveNext() {
-        with(state.value) {
-            if (receivers.isEmpty()) {
+    fun clear() {
+        update { AssistantVMState() }
+    }
+
+    fun setEntity(entity: Entity) {
+        when (entity.entity) {
+            "amount" -> {
+                update { it.copy(amount = entity.value, assistantState = AssistantState.SUGGEST) }
+            }
+
+            "bank" -> {
                 update {
                     it.copy(
-                        assistantState = AssistantState.MEMBERS,
-                        receivers = listUserExample
+                        payment = Payment.find(entity.value)
                     )
                 }
-            } else if (amount.isEmpty()) {
+            }
+
+            "account_number" -> {
+                update {
+                    it.copy(
+                        accountNumber = entity.value
+                    )
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+    fun moveNext() {
+        with(state.value) {
+           if (amount.isEmpty()) {
                 update { it.copy(assistantState = AssistantState.AMOUNT, amount = "100.000đ") }
             } else if (payment == null) {
                 update {
                     it.copy(
                         assistantState = AssistantState.ACCOUNT,
-                        payment = FakeData.payments[0]
                     )
                 }
             } else if (message.isEmpty()) {
@@ -57,30 +79,6 @@ class AssistantVimel @Inject constructor() : VimelStateHolder<AssistantVimel.Ass
     fun stopFlow() {
         with(state.value) {
             update { it.copy(assistantState = AssistantState.NULL) }
-        }
-    }
-
-    fun setReceiver(users: List<User>) {
-        with(state.value) {
-            update { it.copy(receivers = users) }
-        }
-    }
-
-    fun setAmount(amount: String) {
-        with(state.value) {
-            update { it.copy(amount = amount) }
-        }
-    }
-
-    fun setPayment(payment: Payment) {
-        with(state.value) {
-            update { it.copy(payment = payment) }
-        }
-    }
-
-    fun setMessage(message: String) {
-        with(state.value) {
-            update { it.copy(message = message) }
         }
     }
 }

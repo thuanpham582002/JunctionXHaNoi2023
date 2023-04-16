@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.TypeConverters
 import dev.keego.fintechass.setup.room.converter.ListIntConverter
-import dev.keego.fintechass.setup.room.converter.MessageConverter
 
 
 @Dao
