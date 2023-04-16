@@ -51,7 +51,7 @@ fun new_group_(navigator: DestinationsNavigator) {
     val state by newGroupVimel.state.collectAsState()
     var listCheckBox by remember {
         mutableStateOf(
-            listOf<Boolean>(
+            listOf(
                 true,
                 false,
                 false,

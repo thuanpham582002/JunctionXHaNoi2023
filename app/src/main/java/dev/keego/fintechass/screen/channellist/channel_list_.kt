@@ -1,34 +1,10 @@
 package dev.keego.fintechass.screen.channellist
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -38,14 +14,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.keego.fintechass.R
+import dev.keego.fintechass.destinations.chat_Destination
+import dev.keego.fintechass.destinations.new_group_Destination
 import dev.keego.fintechass.screen.channellist.components._avatar_item
 import dev.keego.fintechass.screen.channellist.components._channel_item
 import dev.keego.fintechass.screen.channellist.components._empty_content
 import dev.keego.fintechass.screen.chat.components._pay_ment
-import dev.keego.fintechass.screen.destinations.chat_Destination
-import dev.keego.fintechass.screen.destinations.new_group_Destination
 import dev.keego.fintechass.setup.room.RoomChat
 import dev.keego.fintechass.setup.room.listUserExample
+import dev.keego.fintechass.ui._assistant_component
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,22 +97,11 @@ fun channel_list_(navigator: DestinationsNavigator) {
     }) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            _pay_ment(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                titleCompose = {
-                    Text(text = "Transfer Money")
-                }, intentCompose = {
-                    Text(text = "Intent")
-                }, amountCompose = {
-                    Text(text = "Amount")
-                })
+            _assistant_component()
 
             if (state.roomChats.isEmpty()) {
                 _empty_content(Modifier.fillMaxSize()) {

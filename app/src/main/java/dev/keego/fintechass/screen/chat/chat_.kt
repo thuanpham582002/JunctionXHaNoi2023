@@ -3,13 +3,7 @@ package dev.keego.fintechass.screen.chat
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,6 +44,7 @@ import dev.keego.fintechass.screen.chat.components._message_item_me
 import dev.keego.fintechass.screen.chat.components._message_item_you
 import dev.keego.fintechass.setup.room.Message
 import dev.keego.fintechass.setup.room.listUserExample
+import dev.keego.fintechass.ui._assistant_component
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,42 +103,49 @@ fun chat_(
                 .padding(paddingValues)
                 .padding(8.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Spacer(modifier = Modifier.weight(1f))
-                LazyColumn(
-                    state = scrollState,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.background),
-                    content = {
-                        state.roomChat?.messages?.size?.let { size ->
-                            items(size) {
-                                if (state.roomChat!!.messages[it].idUser == state.currentUserId) {
-                                    _message_item_me(state.roomChat!!.messages[it].message)
-                                } else {
-                                    if (it > 0 && state.roomChat!!.messages[it].idUser == state
-                                            .roomChat!!
-                                            .messages[it - 1].idUser
-                                    )
-                                        _message_item_you(
-                                            state.roomChat!!.messages[it].message,
-                                            state.roomChat!!.messages[it].idUser,
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.weight(1f))
+                    LazyColumn(
+                        state = scrollState,
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colorScheme.background),
+                        content = {
+                            state.roomChat?.messages?.size?.let { size ->
+                                items(size) {
+                                    if (state.roomChat!!.messages[it].idUser == state.currentUserId) {
+                                        _message_item_me(state.roomChat!!.messages[it].message)
+                                    } else {
+                                        if (it > 0 && state.roomChat!!.messages[it].idUser == state
+                                                .roomChat!!
+                                                .messages[it - 1].idUser
                                         )
-                                    else {
-                                        _message_item_you(
-                                            state.roomChat!!.messages[it].message,
-                                            state.roomChat!!.messages[it].idUser,
-                                            true
-                                        )
-                                    }
+                                            _message_item_you(
+                                                state.roomChat!!.messages[it].message,
+                                                state.roomChat!!.messages[it].idUser,
+                                            )
+                                        else {
+                                            _message_item_you(
+                                                state.roomChat!!.messages[it].message,
+                                                state.roomChat!!.messages[it].idUser,
+                                                true
+                                            )
+                                        }
 
+                                    }
+                                    Divider(
+                                        modifier = Modifier.height(8.dp),
+                                        color = MaterialTheme.colorScheme.background
+                                    )
                                 }
-                                Divider(
-                                    modifier = Modifier.height(8.dp),
-                                    color = MaterialTheme.colorScheme.background
-                                )
                             }
-                        }
-                    })
+                        })
+                }
+                _assistant_component(modifier = Modifier.align(Alignment.BottomEnd))
             }
             Row(
                 modifier = Modifier
